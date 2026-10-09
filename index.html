@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#e9eddf">
+  <meta name="description" content="Calculadora botánica, sencilla y bonita.">
+  <title>Calculadora Botánica</title>
+
+  <style>
+    :root {
+      --cream: #f7f5eb;
+      --sage: #e5eadc;
+      --green: #526d57;
+      --dark: #304a38;
+      --light: #fffef8;
+      --muted: #859481;
+      --accent: #c5d2b6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background:
+        radial-gradient(ellipse at top left, #e0e8d6, transparent 55%),
+        var(--cream);
+      color: var(--dark);
+      font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 380px;
+      padding: 25px 21px 22px;
+      border: 1px solid #dce3d4;
+      border-radius: 30px;
+      background: rgba(255, 254, 248, .88);
+      box-shadow: 0 18px 50px #304a3812;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 17px;
+      background: var(--sage);
+      font-size: 27px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: -.6px;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .display {
+      min-height: 130px;
+      padding: 18px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
+      gap: 12px;
+      overflow: hidden;
+      border-bottom: 1px solid #e4e8dd;
+      margin-bottom: 20px;
+    }
+
+    #expression {
+      width: 100%;
+      min-height: 20px;
+      color: var(--muted);
+      text-align: right;
+      font-size: 16px;
+      overflow-wrap: anywhere;
+    }
+
+    #result {
+      width: 100%;
+      color: var(--dark);
+      text-align: right;
+      font-size: clamp(35px, 10vw, 48px);
+      font-weight: 400;
+      letter-spacing: -1.5px;
+      overflow-wrap: anywhere;
+    }
+
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 11px;
+    }
+
+    button {
+      min-width: 0;
+      height: 61px;
+      border: 0;
+      border-radius: 21px;
+      background: var(--sage);
+      color: var(--dark);
+      font: inherit;
+      font-size: 21px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .1s, filter .1s;
+    }
+
+    button:active {
+      transform: scale(.94);
+      filter: brightness(.96);
+    }
+
+    button.utility {
+      background: #edf0e7;
+      color: var(--green);
+      font-size: 18px;
+    }
+
+    button.operator {
+      background: #d4dfc9;
+      color: #385640;
+      font-size: 25px;
+    }
+
+    button.equals {
+      background: var(--green);
+      color: white;
+      font-size: 27px;
+    }
+
+    button.zero {
+      grid-column: span 2;
+    }
+
+    footer {
+      margin-top: 23px;
+      text-align: center;
+      color: var(--muted);
+      font-family: Georgia, serif;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    @media (max-width: 350px) {
+      .app { padding: 18px 13px; }
+      .keys { gap: 8px; }
+      button { height: 54px; border-radius: 17px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header>
+      <div class="logo" aria-hidden="true">🌿</div>
+      <div>
+        <h1>Calculadora Botánica</h1>
+        <p class="subtitle">Un pequeño momento de calma</p>
+      </div>
+    </header>
+
+    <section class="display" aria-live="polite">
+      <div id="expression">Lista para calcular</div>
+      <div id="result">0</div>
+    </section>
+
+    <section class="keys" aria-label="Teclado de calculadora">
+      <button class="utility" data-action="clear">AC</button>
+      <button class="utility" data-action="sign">+/−</button>
+      <button class="utility" data-action="percent">%</button>
+      <button class="operator" data-op="÷">÷</button>
+
+      <button data-num="7">7</button>
+      <button data-num="8">8</button>
+      <button data-num="9">9</button>
+      <button class="operator" data-op="×">×</button>
+
+      <button data-num="4">4</button>
+      <button data-num="5">5</button>
+      <button data-num="6">6</button>
+      <button class="operator" data-op="−">−</button>
+
+      <button data-num="1">1</button>
+      <button data-num="2">2</button>
+      <button data-num="3">3</button>
+      <button class="operator" data-op="+">+</button>
+
+      <button class="utility" data-action="backspace">⌫</button>
+      <button class="zero" data-num="0">0</button>
+      <button data-action="decimal">.</button>
+      <button class="equals" data-action="equals">=</button>
+    </section>
+
+    <footer>Crece a tu propio ritmo ✿</footer>
+  </main>
+
+  <script>
+    const resultEl = document.getElementById("result");
+    const expressionEl = document.getElementById("expression");
+
+    let current = "0";
+    let stored = null;
+    let operator = null;
+    let waiting = false;
+    let finished = false;
+    let expression = "";
+
+    function format(value) {
+      if (!Number.isFinite(value)) return "Error";
+      if (Math.abs(value) >= 1e15 ||
+          (value !== 0 && Math.abs(value) < 1e-7)) {
+        return value.toExponential(6);
+      }
+      return String(Number(value.toPrecision(12)));
+    }
+
+    function render() {
+      resultEl.textContent = current;
+      expressionEl.textContent = expression || "Lista para calcular";
+    }
+
+    function clearAll() {
+      current = "0";
+      stored = null;
+      operator = null;
+      waiting = false;
+      finished = false;
+      expression = "";
+      render();
+    }
+
+    function inputNumber(n) {
+      if (current === "Error") clearAll();
+
+      if (waiting || finished) {
+        current = n;
+        waiting = false;
+        finished = false;
+        if (!operator) expression = "";
+      } else if (current === "0") {
+        current = n;
+      } else if (current === "-0") {
+        current = "-" + n;
+      } else if (current.replace("-", "").replace(".", "").length < 14) {
+        current += n;
+      }
+      render();
+    }
+
+    function decimal() {
+      if (current === "Error") clearAll();
+
+      if (waiting || finished) {
+        current = "0.";
+        waiting = false;
+        finished = false;
+        if (!operator) expression = "";
+      } else if (!current.includes(".")) {
+        current += ".";
+      }
+      render();
+    }
+
+    function chooseOperator(next) {
+      if (current === "Error") return;
+
+      const value = Number(current);
+
+      if (operator && !waiting) {
+        if (!calculate()) return;
+      } else {
+        stored = value;
+      }
+
+      operator = next;
+      waiting = true;
+      finished = false;
+      expression = format(stored) + " " + operator;
+      render();
+    }
+
+    function calculate() {
+      if (operator === null || stored === null) return true;
+
+      const a = stored;
+      const b = Number(current);
+      let answer;
+
+      switch (operator) {
+        case "+": answer = a + b; break;
+        case "−": answer = a - b; break;
+        case "×": answer = a * b; break;
+        case "÷":
+          if (b === 0) {
+            current = "Error";
+            expression = "No se puede dividir entre cero";
+            stored = null;
+            operator = null;
+            waiting = true;
+            finished = true;
+            render();
+            return false;
+          }
+          answer = a / b;
+          break;
+        default: return true;
+      }
+
+      expression = format(a) + " " + operator + " " + format(b) + " =";
+      current = format(answer);
+      stored = null;
+      operator = null;
+      waiting = true;
+      finished = true;
+      render();
+      return true;
+    }
+
+    function action(name) {
+      if (name === "clear") return clearAll();
+
+      if (name === "equals") {
+        if (!waiting) calculate();
+        return;
+      }
+
+      if (current === "Error") clearAll();
+
+      if (name === "sign") {
+        if (Number(current) !== 0) {
+          current = current.startsWith("-")
+            ? current.slice(1) : "-" + current;
+        }
+      }
+
+      if (name === "percent") {
+        current = format(Number(current) / 100);
+      }
+
+      if (name === "backspace") {
+        if (waiting || finished) {
+          current = "0";
+          waiting = false;
+          finished = false;
+        } else {
+          current = current.length > 1
+            ? current.slice(0, -1) : "0";
+          if (current === "-") current = "0";
+        }
+      }
+
+      render();
+    }
+
+    document.querySelector(".keys").addEventListener("click", event => {
+      const button = event.target.closest("button");
+      if (!button) return;
+
+      if (button.dataset.num !== undefined) {
+        inputNumber(button.dataset.num);
+      } else if (button.dataset.op) {
+        chooseOperator(button.dataset.op);
+      } else if (button.dataset.action === "decimal") {
+        decimal();
+      } else {
+        action(button.dataset.action);
+      }
+    });
+
+    document.addEventListener("keydown", event => {
+      const key = event.key;
+
+      if (/^[0-9]$/.test(key)) inputNumber(key);
+      else if (key === "." || key === ",") decimal();
+      else if (key === "+") chooseOperator("+");
+      else if (key === "-") chooseOperator("−");
+      else if (key === "*") chooseOperator("×");
+      else if (key === "/") {
+        event.preventDefault();
+        chooseOperator("÷");
+      }
+      else if (key === "Enter" || key === "=") action("equals");
+      else if (key === "Escape") clearAll();
+      else if (key === "Backspace") action("backspace");
+      else return;
+
+      event.preventDefault();
+    });
+
+    render();
+  </script>
+</body>
+</html>
